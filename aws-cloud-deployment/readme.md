@@ -6,7 +6,7 @@ Welcome to the ONE Record Hackathon, in this document you will find all the inst
 
 To use the AWS services you will need to join the AWS Event.
 
-1. Connect to the followint link : https://catalog.us-east-1.prod.workshops.aws/join?access-code=840a-052279-10
+1. Connect to the followint link : 
 
 2. Request a ONE Time Password with the email you used to register for the hackathon
 
