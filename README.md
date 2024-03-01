@@ -1,48 +1,14 @@
-# First Steps with NE:ONE Server
+# ONE Record Hackathon
 
-> [NE:ONE - opeN sourcE: ONE record server software](https://git.openlogisticsfoundation.org/wg-digitalaircargo/ne-one)
+Welcome to the ONE Record Hackathon, in this document you will find all the instructions to run a NE:ONE Server and a NE:ONE Play instance on your personal computer
 
-## Introduction
-
-Hello and welcome to this short tutorial.
-The tutorial is intended to help ONE Record users get started with their ONE Record servers.
-The examples are based on a local development environment, e.g. the ONE Record Server is available at http://localhost:8080.
-However, all steps can be performed on any other ONE Record Server, regardless of the environment, e.g. cloud environment deployments such as Amazon AWS or Microsoft Azure.
-
-This tutorials covers the following topics:
-
-- Setup a local development environment
-- Setup a cloud environment with Amazon AWS
-- Authentication with Access Tokens
-- Connecting to a ONE Record Server
-- Requesting Logistics Objects
-- Creating Logistics Objects
-- Updating Logistics Objects
-
-The tutorial is based on the ONE Record API specification v2.0.0, ONE Record data model v3.0.0, and the NE:ONE Server v1.1.0.
-
-### Important Terms and Concepts
-
-| Name | Description | Example |
-| ---- | ----------- | ------- |
-| **ONE Record server URL** | Base URL of the ONE Record Server that can be used to get the ServerInformation | <ul><li>http:/localhost:8080</li><li>https://1r.example.com</li></ul> |
-| **LogisticsObjectURI** | Globally unique identifier that is created when a new LogisticsObject is created | http://localhost:8080/logistics-objects/eff8ba45-6d2c-4f0b-8a33-9de8f830f38b |
-| **Data holder URI** | Data holder of a ONE Record Server and the LogisticsObject located on it. Technically, this is a data object of type [Organization](https://onerecord.iata.org/ns/cargo#Organization), which is a subclass of LogisticsObject | <ul><li>http://localhost:8080/logistics-objects/_data-holder</li><li>https://1r.example.com/logistics-objects/51cbed0f-43db-4a8a-a0db-e80937540511</li></ul> |
-| **Access token URL** | HTTP endpoint provided by the authentication server that can be queried with client_id and client_secret to get an ID token | <ul><li>http://localhost:8989/realms/neone/protocol/openid-connect/token (Keycloak)</li><li>https://<tenant-name>.b2clogin.com/<tenant-name>.onmicrosoft.com/<policy-name>/oauth2/v2.0/token (Azure AD B2C)</li><li>https://<domain>.auth.<region>.amazoncognito.com/oauth2/token (AWS Cognito)</li><li>https://<domain>.okta.com/oauth2/<authorizationServerId>/v1/token (Okta)</li></ul> |
-| **client_id** | A public identifier for app/daemon/client used to authenticate to an authentication server. | <ul><li>neone-client (Keycloak)</li><li>f108f391-b46b-43fe-9a73-831f4b1ba519</li></ul> |
-| **client secret** | Secret known only to the app/daemon/client and the authentication server. Comparable to a password. | <ul><li>lx7ThS5aYggdsMm42BP3wMrVqKm9WpNY (Keycloak)</li><li>FwY8Q~WkDKF6JaFjH3_6HeM6BrGAaefPkcWvkbQm</li></ul> |
-| **scope** | Limits an application's access. Not necessary for ONE Record authentication, but required by some authentication servers. | https://<tenant-name>.onmicrosoft.com/<api-app-id-uri>/access_as_application |
-| **access token** | An access token / ID token is a JSON Web Token (JWT) that contains authenticated user information, issued by an authorization server as part of the authentication response. This needs to be sent with every ONE Record request to authenticate the client | eyJhbGciOiJSUzI1...zKUHw |
-
-## Start your local ONE Record development environment
-
-### Prerequisites
+## Prerequisites
 
 - [Docker](https://docs.docker.com/get-docker/) installed
-- [Docker Compose](https://docs.docker.com/compose/install/) installed
+- [Docker Compose](https://docs.docker.com/compose/install/) installed (make sure you have compose V2)
 - [Git](https://git-scm.com/downloads) installed
 
-### Step by step guide
+## Step by step guide
 
 1) Clone the repository
    ```bash
@@ -68,98 +34,70 @@ The tutorial is based on the ONE Record API specification v2.0.0, ONE Record dat
 5) Try to access the ONE Record Server by  http://localhost:8080 using your favorite browser. 
    You should see a HTTP Error 401, because you did not authenticate yet. But this confirms that the ONE Record Server is up and running.
 
-## Exchange data with your ONE Record server
+# Overview of services
 
-### Prerequisites
+| Name | Description | Base URL / Admin UI |
+|-|-|-|
+| ne-one server | [ne-one server](https://git.openlogisticsfoundation.org/wg-digitalaircargo/ne-one) | http://localhost:8080 |
+| ne-one view | [ne-one view](https://git.openlogisticsfoundation.org/wg-digitalaircargo/ne-one-view) | http://localhost:3000 |
+| ne-one play | [ne-one play](https://github.com/aloccid-iata/neoneplay) | http://localhost:3001 |
+| graphdb | GraphDB database as database backend for ne-one server | http://localhost:7200 |
+| keycloak | Identity provider for ne-one server to authenticate ONE Record clients and to obtain tokens for outgoing requests. <br/> **Preconfigured client_id:** neone-client<br/> **Preconfigured client_secret:** lx7ThS5aYggdsMm42BP3wMrVqKm9WpNY  | http://localhost:8989 <br/> (username/password: admin/admin)|
 
-- [Postman](https://www.postman.com) desktop app installed or Postman web app. However, When running the ONE Record server locally, you need to use the Postman Desktop Agent. [See here for more information on this topic.](https://learning.postman.com/docs/getting-started/basics/about-postman-agent/#the-postman-desktop-agent)
-- when testing with a local ONE Record Server, the Postman desktop app is recommended.
-- Your ONE Record Server URL
-- Access Token URL configured in your ONE Record Server
-- Credentials that authenticates you as the data owner of a ONE Record Server: client_id, client_secret, and scope (optional)
+## Postman Collection
 
-#### Setup a Workspace in Postman and import example requests
+To have you up and running we prepared a Postman collection. You will need to install Postman or a compatible software in order to use it.
 
-1) On the home screen of Postman, click Create Workspace
-2) Select a name of the new Workspace, for example, ONE Record Tutorials
-3) Visibility can be left with Team
-4) Click Create Workspace
-5) Click Import
-6) Drag'n'Drop the Postman collection or select file.
-(The Postman collection can be found [here](assets/ONE-Record_-_First_steps.postman_collection.json).)
-7) Expand the newly imported collection "ONE Record - First Steps" to see all example requests by click on the caret icon
+1. [Download the Postman Collection here.](./assets/postman/Hackathon.postman_collection.json) It will open a new github page, use the download button to get the file
 
-![Preparation of Postman - Part 1](assets/Postman_Preparation-1.png)
-![Preparation of Postman - Part 2](assets/Postman_Preparation-2.png)
-![Preparation of Postman - Part 3](assets/Postman_Preparation-3.png)
-![Preparation of Postman - Part 4](assets/Postman_Preparation-4.png)
+2. [Download the Postman Environment here](./assets/postman/Hackathon.postman_environment.json). It will open a new github page, use the download button to get the file
 
-### Obtain an Access Token
+3. Import the Environment in Postman
 
-1) Select “1) Obtain an access token” request
-2) Replace <token_endpoint> with your provided token_endpoint
-3) Select Response Body tab and replace <client_id> with your provided client_id
-4) Replace <client_id> with your provided client_id
-5) Replace  <client_secret> with your provided client_secret
-6) Press Send-Button to request access token
-7) You should see a response with an access_token.
+![Image9](./assets/image/image9.PNG)
 
-![Obtain an access token](assets/Obtain-an-access-token.png)
+4. Import the Collection in Postman
 
-### Get ServerInformation
+![Image8](./assets/image/image8.PNG)
 
-1) Select "2) Get ServerInformation" request
-2) Replace <one_record_server_url> with your ONE Record Server URL
-3) Select Authorization tab and replace <access_token> with previously copied access_token
-4) Press Send-Button to request ServerInformation
-5) You should see a LogisticsObject of Type `Organization` as a response. This is the configured data holder of the ONE Record server.
+5. In the Environments tab, select Hackathon environment and set the baseUrlKeyCloak to http://localhost:7200.
 
-![Get ServerInformation](assets/Get-ServerInformation.png)
+![Image10](./assets/image/image10.PNG)
 
-### Get Data Owner Logistics Object
+6. Set the baseUrlShipper,baseUrlForwarder and baseUrlAirline to http://localhost:8080.
 
-1) Select "3) Get data owner (LogisticsObject)" request
-2) Replace <data_owner_uri> with your provided Data Owner URI or the copied `@id` from previous response
-3) Select Authorization tab and replace <access_token> with previous copied access_token
-4) Press Send-Button to request data owner data
-5) Select Headers Tab in Response to check the latest-revision number. If the data owner has not been changed yet, this value should be "1".
+![Image14](./assets/image/image14.PNG)
 
-![Get Data Owner](assets/Get-data-owner.png)
+7. Select Collections on the right menu and open the Hackathon collection already imported
 
-### Create Person (LogisticsObject)
+8. Use the Token Request call to generate and access token
 
-1) Select "4) Create Person (LogisticsObject)" request
-2) Replace <one_record_server_url> with your provided ONE Record Server URL, the endpoint must contain ´/logistics-objects`
-3) Select Authorization tab and replace <access_token> with previously copied access_token
-4) Select Request Body Tab and modify the information about the Person you want to create
-5) Press Send-Button to create the new Person
-6) Select Headers Tab in Response to check the location header. This is the LogisticsObjectURI of the newly created Person. Copy it for the next request.
+![Image16](./assets/image/image16.PNG)
 
-![Create Person - Part 1](assets/Create-Person-1.png)
-![Create Person - Part 2](assets/Create-Person-2.png)
+9. Copy the access token (it might be a long string, please copy the full content) in the Authorization tab of the Get ServerInformation and run the call
 
-### Update DataOwner Organization (add Person and replace name)
+![Image15](./assets/image/image15.PNG)
 
-1) Select "5) Update DataOwner Organization (add Person and replace name)" request
-2) Replace <data_owner_uri> with your Data Owner URI or the copied `@id` from previous response, default: http://localhost:8080/logistics-objects/_data-holder
-3) Select Authorization tab and replace <access_token> with previous copied access_token
-4) Select Request Body Tab
-5) Setup the new name of the Data Owner Organization
-6) Replace <data_owner_uri> with your provided Data Owner URI or the copied `@id` from previous response (4 times!)
-7) Replace <person_LogisticsObjectURI> with your LogisticsObjectURI of the new created Person from last request
-8) Make sure that the revision is the same as latest-revision, i.e. 1
-9) Press Send-Button to update the data owner organization
-10) Select "Get data owner (LogisticsObject)" request again
-11) Press Send-Button to request data owner data
-12) Verify that the data owner object changed and the latest-revision is "2"
+10. If everything is setup correctly, you will see the server information of the AWS server
 
-![Update Data Owner - Part 1](assets/Update-Data-Owner-1.png)
-![Update Data Owner - Part 2](assets/Update-Data-Owner-2b.png)
-![Update Data Owner - Part 3](assets/Update-Data-Owner-3b.png)
+11. Copy the access token in Authentication tab of the Example Workflow folder
 
-## Supporting documents and further readings
+12. Run the calls one by one to create the objects. The order is important as each call is connected to the previous one.
 
-- [Postman collection](assets/ONE-Record_-_First_steps.postman_collection.json)
-- [ONE Record API specification](https://iata-cargo.github.io/ONE-Record/)
-- [ONE Record data model](https://github.com/IATA-Cargo/ONE-Record/tree/master/working_draft/ontology)
-- [NE:ONE - opeN sourcE: ONE record server software](https://git.openlogisticsfoundation.org/wg-digitalaircargo/ne-one)
+## Add NE:ONE server into NE:ONE Play
+
+1. Connect to NE:ONE Play http://localhost:3001 
+
+2. Click on the setting button in the top-right corner (cog icon)
+
+3. Add your server following this instruction:
+
+    - Organization Name: <Choose a name (any string is accepted)>
+    - Protocol: http
+    - Host: http://localhost:8080  
+    - Token : <Use the postman collection to generate a token and copy it here (follow the previous paragraph)>
+    - Color : pick up a random color
+
+    ![Image17](./assets/image/neone_setup.PNG)
+
+4. Now you can start using NE:ONE Play. 
