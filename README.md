@@ -12,7 +12,7 @@ Welcome to the ONE Record Hackathon, in this document you will find all the inst
 
 1) Clone the repository
    ```bash
-   git clone https://github.com/ddoeppner/one-record-server-first-steps
+   git clone https://gitlab.com/iata-cargo/one-record-server-first-steps.git
    ```
 2) Switch to the directory to docker-compose
    ```bash
@@ -101,3 +101,4 @@ To have you up and running we prepared a Postman collection. You will need to in
     ![Image17](./assets/image/neone_setup.PNG)
 
 4. Now you can start using NE:ONE Play. 
+
