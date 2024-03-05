@@ -30,7 +30,9 @@ services:
             timeout: 5s
             retries: 10            
         environment:            
-            - REPOSITORY_TYPE=http
+            - REPOSITORY_TYPE=sparql
+            - SPARQL_QUERY_ENDPOINT=http://graph-db:7200/repositories/neone
+            - SPARQL_UPDATE_ENDPOINT=http://graph-db:7200/repositories/neone/statements
             - HTTP_REPOSITORY_URL=http://graph-db:7200/repositories/neone
             - LO_ID_CONFIG_HOST=localhost
             - LO_ID_CONFIG_PORT=8080
