@@ -60,7 +60,7 @@ To have you up and running we prepared a Postman collection. You will need to in
 
 ![Image8](./assets/image/image8.PNG)
 
-5. In the Environments tab, select Hackathon environment and set the baseUrlKeyCloak to http://localhost:7200.
+5. In the Environments tab, select Hackathon environment and set the baseUrlKeyCloak to http://localhost:8989.
 
 ![Image10](./assets/image/image10.PNG)
 
