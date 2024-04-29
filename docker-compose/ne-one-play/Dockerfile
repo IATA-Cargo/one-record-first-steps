@@ -6,7 +6,7 @@ FROM base AS deps
 RUN apk add --no-cache libc6-compat git
 WORKDIR /app
 
-RUN git clone -b feature/aws https://gitlab.com/iata-cargo/neoneplay.git
+RUN git clone -b feature/aws https://github.com/aloccid-iata/neoneplay.git
 RUN mv neoneplay/* ./
 
 RUN \
