@@ -1,6 +1,6 @@
-# ONE Record Hackathon
+# ONE Record First Steps
 
-Welcome to the ONE Record Hackathon, in this document you will find all the instructions to run a NE:ONE Server and a NE:ONE Play instance on your personal computer
+Welcome to the ONE Record First Steps, in this document you will find all the instructions to run a NE:ONE Server and a NE:ONE Play instance on your personal computer
 
 ## Prerequisites
 
