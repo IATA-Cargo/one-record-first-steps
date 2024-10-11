@@ -78,7 +78,7 @@ To have you up and running we prepared a Postman collection. You will need to in
 
 ![Image15](./assets/image/image15.PNG)
 
-10. If everything is setup correctly, you will see the server information of the AWS server
+10. If everything is setup correctly, you will see the server information of the NE:ONE local server
 
 11. Copy the access token in Authentication tab of the Example Workflow folder
 
