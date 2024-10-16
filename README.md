@@ -18,6 +18,10 @@ Welcome to the ONE Record First Steps, in this document you will find all the in
    ```bash
    cd one-record-server-first-steps/docker-compose
    ```
+   If you have Mac or Linux, please reset folder permissions 
+   ```bash
+   chmod -R 755 ./
+   ```
 3) Start all services with [docker compose](https://docs.docker.com/compose/)
    ```bash
    docker compose up -d
